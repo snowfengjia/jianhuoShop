@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dao.BbsMapper" >
+  <resultMap id="BaseResultMap" type="com.pojo.Bbs" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <id column="uid" property="uid" jdbcType="INTEGER" />
+    <id column="gid" property="gid" jdbcType="INTEGER" />
+    <result column="pubtime" property="pubtime" jdbcType="VARCHAR" />
+    <result column="etime" property="etime" jdbcType="VARCHAR" />
+    <result column="isdel" property="isdel" jdbcType="VARCHAR" />
+    <result column="btype" property="btype" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.pojo.BbsWithBLOBs" extends="BaseResultMap" >
+    <result column="note" property="note" jdbcType="LONGVARCHAR" />
+    <result column="note2" property="note2" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, pubtime, etime, isdel,uid,gid,btype
+  </sql>
+  <sql id="Blob_Column_List" >
+    note, note2
+  </sql>
+    <select id="getCount"  resultType="int" parameterType="java.util.Map" >
+    select  count(*) from bbs  where isdel="1" 
+   <if test="name!=null ">
+     and name like concat('%',#{name,jdbcType=VARCHAR},'%')
+     </if>
+      <if test="xueli!=null ">
+     and xueli like concat('%',#{xueli,jdbcType=VARCHAR},'%')
+     </if>
+      <if test="uid!=null ">
+     and uid =#{uid,jdbcType=INTEGER}
+     </if>
+     <if test="gid!=null ">
+     and gid =#{gid,jdbcType=INTEGER}
+     </if>
+     <if test="btype!=null ">
+     and btype =#{btype,jdbcType=VARCHAR}
+     </if>
+     <if test="ztype!=null ">
+     and ztype =#{ztype,jdbcType=VARCHAR}
+     </if>
+     
+     <if test="experience!=null ">
+     and experience like concat('%',#{experience,jdbcType=VARCHAR},'%')
+     </if>
+  </select>
+  <select id="getAll"   resultMap="ResultMapWithBLOBs" parameterType="java.util.Map" >
+    select   
+    <include refid="Base_Column_List" />
+     ,
+    <include refid="Blob_Column_List" />
+     from bbs where isdel="1"
+    <if test="name!=null ">
+     and name like concat('%',#{name,jdbcType=VARCHAR},'%')
+     </if>
+      <if test="gid!=null ">
+     and gid =#{gid,jdbcType=INTEGER}
+     </if>
+     <if test="btype!=null ">
+     and btype =#{btype,jdbcType=VARCHAR}
+     </if>
+      <if test="xueli!=null ">
+     and xueli like concat('%',#{xueli,jdbcType=VARCHAR},'%')
+     </if>
+      <if test="uid!=null ">
+     and uid =#{uid,jdbcType=INTEGER}
+     </if>
+     <if test="ztype!=null ">
+     and ztype =#{ztype,jdbcType=VARCHAR} 
+     </if>
+     <if test="experience!=null ">
+     and experience like concat('%',#{experience,jdbcType=VARCHAR},'%')
+     </if>
+     order by pubtime asc;
+  </select> 
+   <select id="getByPage" parameterType="java.util.Map" resultMap="ResultMapWithBLOBs">
+     select 
+     <include refid="Base_Column_List" />
+       ,
+    <include refid="Blob_Column_List" />
+    from bbs where isdel="1" 
+    <if test="name!=null ">
+     and name like concat('%',#{name,jdbcType=VARCHAR},'%')
+     </if>
+      <if test="gid!=null ">
+     and gid =#{gid,jdbcType=INTEGER}
+     </if>
+     <if test="btype!=null ">
+     and btype =#{btype,jdbcType=VARCHAR}
+     </if>
+      <if test="xueli!=null ">
+     and xueli like concat('%',#{xueli,jdbcType=VARCHAR},'%')
+     </if>
+      <if test="ztype!=null ">
+     and ztype =#{ztype,jdbcType=VARCHAR} 
+     </if>
+     <if test="uid!=null ">
+     and uid =#{uid,jdbcType=INTEGER}
+     </if>
+      order by pubtime asc 
+     <if test="pageno!=null and pageSize!=null">
+     limit #{pageno},#{pageSize}
+     </if>
+    
+     </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from bbs
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bbs
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pojo.BbsWithBLOBs" >
+    insert into bbs (id,uid, pubtime, etime, 
+      isdel, note, note2,gid,btype
+      )
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{pubtime,jdbcType=VARCHAR}, #{etime,jdbcType=VARCHAR}, 
+      #{isdel,jdbcType=VARCHAR}, #{note,jdbcType=LONGVARCHAR}, #{note2,jdbcType=LONGVARCHAR}, #{gid,jdbcType=INTEGER}
+      , #{btype,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.pojo.BbsWithBLOBs" >
+    insert into bbs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="pubtime != null" >
+        pubtime,
+      </if>
+      <if test="etime != null" >
+        etime,
+      </if>
+      <if test="isdel != null" >
+        isdel,
+      </if>
+      <if test="note != null" >
+        note,
+      </if>
+      <if test="note2 != null" >
+        note2,
+      </if>
+      <if test="note2 != null" >
+        note2,
+      </if>
+      <if test="gid != null" >
+        gid,
+      </if>
+      <if test="btype != null" >
+        btype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+       <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="pubtime != null" >
+        #{pubtime,jdbcType=VARCHAR},
+      </if>
+      <if test="etime != null" >
+        #{etime,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="note2 != null" >
+        #{note2,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="gid != null" >
+        #{gid,jdbcType=INTEGER},
+      </if>
+      <if test="btype != null" >
+        #{btype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pojo.BbsWithBLOBs" >
+    update bbs
+    <set >
+      <if test="pubtime != null" >
+        pubtime = #{pubtime,jdbcType=VARCHAR},
+      </if>
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="etime != null" >
+        etime = #{etime,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        note = #{note,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="note2 != null" >
+        note2 = #{note2,jdbcType=LONGVARCHAR},
+      </if>
+       <if test="gid != null" >
+        gid = #{gid,jdbcType=INTEGER},
+      </if>
+       <if test="btype != null" >
+        btype = #{btype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pojo.BbsWithBLOBs" >
+    update bbs
+    set pubtime = #{pubtime,jdbcType=VARCHAR},
+      etime = #{etime,jdbcType=VARCHAR},
+      isdel = #{isdel,jdbcType=VARCHAR},
+      note = #{note,jdbcType=LONGVARCHAR},
+      uid = #{uid,jdbcType=INTEGER},
+      gid = #{gid,jdbcType=INTEGER},
+      note2 = #{note2,jdbcType=LONGVARCHAR},
+      btype = #{btype,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pojo.Bbs" >
+    update bbs
+    set pubtime = #{pubtime,jdbcType=VARCHAR},
+      etime = #{etime,jdbcType=VARCHAR},
+        uid = #{uid,jdbcType=INTEGER},
+      isdel = #{isdel,jdbcType=VARCHAR},
+        gid = #{gid,jdbcType=INTEGER},
+      btype = #{btype,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
